@@ -1,0 +1,27 @@
+﻿@model List<MGM.Models.DocumentAttachmentList>
+
+@{
+    ViewBag.Title = "Apply2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Apply2</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div>
+    @foreach (var item in Model)
+    {
+        <select class="form-control" id="DocumentType" name="DocumentType">
+            <option>Select Document</option>
+            @foreach (var doclist in item.DocumentAttachments)
+            {
+                <option value="@doclist.AttachmentTypeId"> @doclist.DocumentName</option>
+            }
+
+        </select>
+    }
+</div>
+

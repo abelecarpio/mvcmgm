@@ -7,51 +7,53 @@
 
 <h2>ApplyAttachment</h2>
 
-
-@using (Html.BeginForm("ApplyAttachment", "Home", FormMethod.Post, new { encType = "multipart/form-data", name = "fullupload" }))
+@using (Html.BeginForm("ValidateFile", "Home", FormMethod.Post, new { encType = "multipart/form-data", name = "partialupload" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-fluid">
 
 
         @*VALID ID*@
-        <div class="row">
-            <div class="col-sm-2">
-                <label for="validIdList">@Model.ValidIdLabel</label>
-            </div>
-            <div class="col-sm-3">
-                <select name="validIdList" class="documentselection">
-                    <option value="0" selected>Select Document Type</option>
-                    @foreach (var item in Model.ValidIdList)
-                    {
-                        <option value="@item.AttachmentTypeId">@item.DocumentName</option>
-                    }
-                </select>
-            </div>
-            <div class="col-sm-2">
-                <input type="file" name="valididfile" style="display:none" />
-            </div>
-        </div>
-        <br />
-
-        @*PROOF OF INCOME*@
-        <div class="row">
-            <div class="form-group">
+        <div class="form-group">
+            <div class="row">
                 <div class="col-sm-2">
-                    <label for="proofOfIncomeList">@Model.ProofOfIncomeLabel</label>
+                    <label for="validIdList">@Model.ValidIdLabel</label>
                 </div>
                 <div class="col-sm-3">
-                    <select name="proofOfIncomeList" class="documentselection">
+                    <select name="validIdList" class="documentselection">
                         <option value="0" selected>Select Document Type</option>
-                        @foreach (var item in Model.ProofOfIncomeList)
+                        @foreach (var item in Model.ValidIdList)
                         {
                             <option value="@item.AttachmentTypeId">@item.DocumentName</option>
                         }
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <input type="file" name="valididfile" style="display:none" />
+                    <input type="file" class="rawfileupload" style="display:none" name="UploadedFile" />
                 </div>
+            </div>
+            <div class="form-group filelist" style="margin-left: 20px;">
+
+            </div>
+        </div>
+        <br />
+
+        @*PROOF OF INCOME*@
+        <div class="row">
+            <div class="col-sm-2">
+                <label for="proofOfIncomeList">@Model.ProofOfIncomeLabel</label>
+            </div>
+            <div class="col-sm-3">
+                <select name="proofOfIncomeList" class="documentselection">
+                    <option value="0" selected>Select Document Type</option>
+                    @foreach (var item in Model.ProofOfIncomeList)
+                    {
+                        <option value="@item.AttachmentTypeId">@item.DocumentName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <input type="file" class="rawfileupload" style="display:none" />
             </div>
         </div>
         <br />
@@ -70,31 +72,68 @@
                 </select>
             </div>
             <div class="col-sm-2">
-                <input type="file" name="valididfile" style="display:none" />
+                <input type="file" class="rawfileupload" style="display:none" />
             </div>
         </div>
     </div>
 }
+
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var isValidIdRequired = @Model.IsValidIdRequired;
-            var isProofOfIncomeRequired = @Model.IsProofOfIncomeRequired;
-            var isOtherRequired = @Model.IsOtherRequired;
+
+            var isValidIdRequired = @Model.IsValidIdRequired.ToString().ToLower();
+            var isProofOfIncomeRequired = @Model.IsProofOfIncomeRequired.ToString().ToLower();
+            var isOtherRequired = @Model.IsOtherRequired.ToString().ToLower();
 
 
-            
+            //$(".rawfileupload").on('change', function () {
+            //    if ($(this).val() == "") return;
+            //    debugger;
+            //    var clone = $(this).clone();
+            //    clone.attr('name','UploadedFile');
+
+            //    $("#fValidator").val($(this).val());
+            //    //$("#uploadvalidator").submit();
+            //});
 
 
+            $(".rawfileupload").on('change', function () {
+                if ($(this).val() == "") return;
+                var original = $(this);
+                var cloned = $(this).clone(true).attr("style", "display:none");
+
+
+                var grandparent = original.parent().parent();
+                var parent = original.parent();
+                var selection = parent.siblings().has('select').children('select').first();
+                var selecttext = selection.children(':selected').text();
+                var wrapper = original.parent().parent().siblings(".filelist").first();
+                
+                cloned.insertAfter(original);                
+                wrapper.append(original);
+                
+                selection.val(0);
+
+
+
+                //var cloned = $(this).clone(true);
+
+                //cloned.insertAfter($(this));
+
+                //$("form[name=partialupload]").submit();
+            });
 
 
             $(".documentselection").on("change", function () {
                 var selection = $(this);
 
-                var uploadfile = selection.parent().siblings().has('input').children('input')[0];
+                var uploadfile = selection.closest('div').siblings().has('input:file').children('input:file')[0];
+                //var uploadfile = selection.closest('div').siblings().has('input:file').children('form').children('input:file')[0];
                 uploadfile.value = "";
 
                 if (selection.val() == 0) {

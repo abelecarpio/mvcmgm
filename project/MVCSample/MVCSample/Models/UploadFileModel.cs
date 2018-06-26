@@ -10,8 +10,8 @@ namespace MVCSample.Models
 
         public int MaximumFileSize { get; set; }
 
-        [Required(ErrorMessage = "Upload file should not be empty.")]
-        [FileUpload(nameof(MaximumFileSize), extNames)]
+        //[Required(ErrorMessage = "Upload file should not be empty.")]
+        //[FileUpload(nameof(MaximumFileSize), extNames)]
         public HttpPostedFileBase UploadedFile { get; set; }
     }
 }

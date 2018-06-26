@@ -115,12 +115,14 @@ namespace MVCSample.Controllers
         [HttpPost]
         public ActionResult ValidateFile(UploadFileModel model)
         {
+            ModelState.Clear();
             if (model == null)
             {
                 model = new UploadFileModel();
                 ModelState.AddModelError("UploadedFile", "File should not be empty.");
             }
             model.MaximumFileSize = 1;
+            TryValidateModel(model);
             if (ModelState.IsValid)
             {
 

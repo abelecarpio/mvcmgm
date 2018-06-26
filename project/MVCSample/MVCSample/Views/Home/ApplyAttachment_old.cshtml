@@ -1,0 +1,69 @@
+﻿@model MVCSample.Models.DocumentAttachmentModel
+
+@{
+    ViewBag.Title = "ApplyAttachment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style type="text/css">
+    .hidecontrol {
+        display: none;
+    }
+</style>
+
+<h2>ApplyAttachment</h2>
+
+@using (Html.BeginForm("ApplyAttachment", "Home", FormMethod.Post, new { encType = "multipart/form-data", name="fullupload" }))
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6"></div>
+        </div>
+    </div>
+}
+
+
+
+
+<div>
+    <div>
+        <div>
+            <label for="ValidIdDocumentId">ID : </label>
+        </div>
+        <div>
+            <select name="ValidIdDocumentId" class="documentselection">
+                <option value="0" selected>Select Document Type</option>
+                @foreach (var item in Model.ValidIdList)
+                {
+                    <option value="@item.DocumentTypeId">@item.DocumentName</option>
+                }
+            </select>
+        </div>
+        <div>
+            <input type="file" name="valididfile" style="display:none" />
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".documentselection").on("change", function () {
+                var selection = $(this);
+                var uploadfile = selection.parent().siblings().has('input').children('input')[0];
+                if (selection.val() == 0) {
+                    $(uploadfile).css('display', 'none');
+                } else {
+                    $(uploadfile).css('display', '');
+                }
+            });
+        });
+    </script>
+}

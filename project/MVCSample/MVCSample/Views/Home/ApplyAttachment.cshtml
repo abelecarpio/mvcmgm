@@ -1,0 +1,114 @@
+﻿@model MVCSample.Models.UploadAttachmentModel
+
+@{
+    ViewBag.Title = "ApplyAttachment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ApplyAttachment</h2>
+
+
+@using (Html.BeginForm("ApplyAttachment", "Home", FormMethod.Post, new { encType = "multipart/form-data", name = "fullupload" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-fluid">
+
+
+        @*VALID ID*@
+        <div class="row">
+            <div class="col-sm-2">
+                <label for="validIdList">@Model.ValidIdLabel</label>
+            </div>
+            <div class="col-sm-3">
+                <select name="validIdList" class="documentselection">
+                    <option value="0" selected>Select Document Type</option>
+                    @foreach (var item in Model.ValidIdList)
+                    {
+                        <option value="@item.AttachmentTypeId">@item.DocumentName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <input type="file" name="valididfile" style="display:none" />
+            </div>
+        </div>
+        <br />
+
+        @*PROOF OF INCOME*@
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-2">
+                    <label for="proofOfIncomeList">@Model.ProofOfIncomeLabel</label>
+                </div>
+                <div class="col-sm-3">
+                    <select name="proofOfIncomeList" class="documentselection">
+                        <option value="0" selected>Select Document Type</option>
+                        @foreach (var item in Model.ProofOfIncomeList)
+                        {
+                            <option value="@item.AttachmentTypeId">@item.DocumentName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <input type="file" name="valididfile" style="display:none" />
+                </div>
+            </div>
+        </div>
+        <br />
+        @*OTHER ATTACHMENTS*@
+        <div class="row">
+            <div class="col-sm-2">
+                <label for="otherList">@Model.OthersLabel</label>
+            </div>
+            <div class="col-sm-3">
+                <select name="otherList" class="documentselection">
+                    <option value="0" selected>Select Document Type</option>
+                    @foreach (var item in Model.OthersList)
+                    {
+                        <option value="@item.AttachmentTypeId">@item.DocumentName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <input type="file" name="valididfile" style="display:none" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var isValidIdRequired = @Model.IsValidIdRequired;
+            var isProofOfIncomeRequired = @Model.IsProofOfIncomeRequired;
+            var isOtherRequired = @Model.IsOtherRequired;
+
+
+            
+
+
+
+
+            $(".documentselection").on("change", function () {
+                var selection = $(this);
+
+                var uploadfile = selection.parent().siblings().has('input').children('input')[0];
+                uploadfile.value = "";
+
+                if (selection.val() == 0) {
+                    $(uploadfile).css('display', 'none');
+                } else {
+                    $(uploadfile).css('display', '');
+                }
+            });
+
+
+
+
+
+        });
+    </script>
+}
+

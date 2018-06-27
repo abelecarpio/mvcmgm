@@ -109,9 +109,9 @@
             return parent.gparent(filter);
         };
 
-        $.fn.isValidFile = function () {
+        $.fn.isValidFile = function (extensionnames) {
             if ($(this) == null || !$(this).is("input[type='file']")) return false;
-            var extensionnames = ["jpg", "pdf","doc","docx","xlsx","ppt","psd","bmp"];
+            
             var fileext = $(this).val().toLowerCase().split("/").reverse()[0].split("\\").reverse()[0].split(".").reverse()[0];
             for (var i = 0; i < extensionnames.length; i++) {
                 if (extensionnames[i] == fileext) return true;
@@ -125,13 +125,13 @@
             var isValidIdRequired = @Model.IsValidIdRequired.ToString().ToLower();
             var isProofOfIncomeRequired = @Model.IsProofOfIncomeRequired.ToString().ToLower();
             var isOtherRequired = @Model.IsOtherRequired.ToString().ToLower();
-
+            var extensionnames = ["jpg", "pdf", "doc", "docx", "xlsx", "ppt", "psd", "bmp", "png"];
 
             $(".rawfileupload").on('change', function () {
                 if ($(this).val() == "") return;
 
-                if (!$(this).isValidFile()) {
-                    alert("Invalid file type.");
+                if (!$(this).isValidFile(extensionnames)) {
+                    alert("Invalid file type. Only file(s) with extension's (" + extensionnames.join(", ") + ") are allowed.");
                     $(this).val('');
                     return;
                 }

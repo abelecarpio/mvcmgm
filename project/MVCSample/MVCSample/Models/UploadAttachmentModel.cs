@@ -12,9 +12,9 @@ namespace MVCSample.Models
 
         public UploadAttachmentModel()
         {
-            ValidIdAttachment = new List<UploadDocumentDetail>();
-            ProofOfIncomeAttachment = new List<UploadDocumentDetail>();
-            OthersAttachment = new List<UploadDocumentDetail>();
+            //ValidIdAttachment = new List<UploadDocumentDetail>();
+            //ProofOfIncomeAttachment = new List<UploadDocumentDetail>();
+            //OthersAttachment = new List<UploadDocumentDetail>();
         }
 
         #region GET PROPERTIES
@@ -48,12 +48,12 @@ namespace MVCSample.Models
 
         #region POST PROPERTIES
         
-        [Required]
-        public List<UploadDocumentDetail> ValidIdAttachment { get; set; }
+        //[Required]
+        //public List<UploadDocumentDetail> ValidIdAttachment { get; set; }
 
-        [RequiredIf(nameof(IsProofOfIncomeRequired), true)]
-        public List<UploadDocumentDetail> ProofOfIncomeAttachment { get; set; }
-        public List<UploadDocumentDetail> OthersAttachment { get; set; }
+        //[RequiredIf(nameof(IsProofOfIncomeRequired), true)]
+        //public List<UploadDocumentDetail> ProofOfIncomeAttachment { get; set; }
+        //public List<UploadDocumentDetail> OthersAttachment { get; set; }
 
         #endregion
 

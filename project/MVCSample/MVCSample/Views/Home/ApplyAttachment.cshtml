@@ -17,7 +17,7 @@
         <div class="grpselect">
             <div class="form-group">
                 <div class="col-sm-2 my-1">
-                    <label for="ValidIdAttachment" class="col-form-label">@Model.ValidIdLabel</label>
+                    <label for="ValidIdAttachment" class="col-form-label">@Model.ValidIdLabel<span style="color:red">@(!Model.IsValidIdRequired? "" : " *")</span></label>
                 </div>
                 <div class="col-sm-4 my-1">
                     <select name="ValidIdAttachment" class="form-control documentselection">
@@ -41,7 +41,7 @@
         <div class="grpselect">
             <div class="form-group">
                 <div class="col-sm-2 my-1">
-                    <label for="ProofOfIncomeAttachment" class="col-form-label">@Model.ProofOfIncomeLabel</label>
+                    <label for="ProofOfIncomeAttachment" class="col-form-label">@Model.ProofOfIncomeLabel<span style="color:red">@(!Model.IsProofOfIncomeRequired ? "" : " *")</span></label>
                 </div>
                 <div class="col-sm-4 my-1">
                     <select name="ProofOfIncomeAttachment" class="form-control documentselection">
@@ -65,7 +65,7 @@
         <div class="grpselect">
             <div class="form-group">
                 <div class="col-sm-2 my-1">
-                    <label for="OthersAttachment" class="col-form-label">@Model.OthersLabel</label>
+                    <label for="OthersAttachment" class="col-form-label">@Model.OthersLabel<span style="color:red">@(!Model.IsOtherRequired ? "" : " *")</span></label>
                 </div>
                 <div class="col-sm-4 my-1">
                     <select name="OthersAttachment" class="form-control documentselection">
@@ -108,7 +108,18 @@
 
             return parent.gparent(filter);
         };
-        
+
+        $.fn.isValidFile = function () {
+            if ($(this) == null || !$(this).is("input[type='file']")) return false;
+            var extensionnames = ["jpg", "pdf","doc","docx","xlsx","ppt","psd","bmp"];
+            var fileext = $(this).val().toLowerCase().split("/").reverse()[0].split("\\").reverse()[0].split(".").reverse()[0];
+            for (var i = 0; i < extensionnames.length; i++) {
+                if (extensionnames[i] == fileext) return true;
+            };
+            return false;
+        };
+
+
         $(document).ready(function () {
 
             var isValidIdRequired = @Model.IsValidIdRequired.ToString().ToLower();
@@ -118,7 +129,14 @@
 
             $(".rawfileupload").on('change', function () {
                 if ($(this).val() == "") return;
-                              
+
+                if (!$(this).isValidFile()) {
+                    alert("Invalid file type.");
+                    $(this).val('');
+                    return;
+                }
+
+
                 var original = $(this);
                 var cloned = $(this).clone(true).val('').attr("style", "display:none");
                 var groupParent = $(this).gparent('.grpselect');
@@ -126,7 +144,8 @@
                 var selection = groupParent.find('select').first();
                 var selecttext = selection.children(':selected').text();
                 var selectvalue = selection.children(':selected').val();
-                var doclistname = selection.attr("name") + ".AttachmentFile";
+                var listname = selection.attr("name");
+                var doclistname = listname + ".AttachmentFile";
 
                 
                 //controls
@@ -135,10 +154,13 @@
                 var indententry = $('<a />', { 'text': "x", "href": "#", "style": "color:gray !important; text-decoration: none !important;", "class": "lnkdeletedoc"});
                 var labelwraperentry = $('<div />', { "class": 'col-sm-3 my-1' });
                 var labelentry = $('<span />', { 'text': selecttext });
-                var docnamewraperentry = $('<div />', { "class": 'col-sm-4 my-1' });
-                var docnameentry = $('<span />', { 'text': original.val().split("/").reverse()[0].split("\\").reverse()[0] });
+                var docnamelabelwraperentry = $('<div />', { "class": 'col-sm-4 my-1' });
+                var docnamelabelentry = $('<span />', { 'text': original.val().split("/").reverse()[0].split("\\").reverse()[0] });
                 var fileuploadwrapperentry = $('<div />', { "class": 'col' });
-
+                var docnamewrapperentry = $('<div />', { "class": 'col' });
+                var docnameentry = $('<input/>', { 'type': 'hidden', 'value': selecttext, 'name': listname + '.DocumentName'});
+                var attachmenttypewrapperentry = $('<div />', { "class": 'col' });
+                var attachmenttypeentry = $('<input/>', { 'type': 'hidden', 'value': selectvalue, 'name': listname + '.AttachmentTypeId' });
 
 
                 cloned.insertAfter(original);
@@ -147,19 +169,22 @@
 
                 indentwrapperentry.append(indententry);
                 labelwraperentry.append(labelentry);
-                docnamewraperentry.append(docnameentry);
+                docnamelabelwraperentry.append(docnamelabelentry);
                 fileuploadwrapperentry.append(original);
+                docnamewrapperentry.append(docnameentry);
+                attachmenttypewrapperentry.append(attachmenttypeentry);
 
                 selection.val(0);
 
                 groupentry.append(indentwrapperentry);
                 groupentry.append(labelwraperentry);
-                groupentry.append(docnamewraperentry);
+                groupentry.append(docnamelabelwraperentry);
                 groupentry.append(fileuploadwrapperentry);
-
+                groupentry.append(docnamewrapperentry);
+                groupentry.append(attachmenttypewrapperentry);
                 
                 destinationWrapper.append(groupentry);
-                destinationWrapper.append($('<br />', {'style': 'font-size: 1px !important'}));                                
+                destinationWrapper.append($('<br />', { 'style': 'font-size: 1px !important' }));                       
             });
 
 
@@ -177,21 +202,23 @@
                     alert($('.filelist').find('input[name^=OthersAttachment]').length);
                 }
 
-
-
-
-
+                var inputcount = 0;
+                //RENAME CONTROLS
                 $('.filelist').each(function (index, val) {
                     var groupentry = $(val).find('.grpentry');
                     for (var i = 0; i < groupentry.length; i++) {
-                        $(groupentry[i]).find('input').each(function (ci, cv) {
-                            var prefix = $(cv).attr('name').split(".")[0].split("[")[0];
-                            var suffix = $(cv).attr('name').split(".").reverse()[0].split("[").reverse()[0];
-                            alert("old name : " + $(cv).attr('name') + " new name :" + prefix + '[' + i + '].' + suffix);
-                            $(cv).attr('name', (prefix + '[' + i + '].' + suffix));
-                        });                        
+                        if ($(groupentry[i]).find('input').length > 0) {
+                            $(groupentry[i]).find('input').each(function (ci, cv) {
+                                var prefix = $(cv).attr('name').split(".")[0].split("[")[0];
+                                var suffix = $(cv).attr('name').split(".").reverse()[0].split("[").reverse()[0];
+                                $(cv).attr('name', ('[' + inputcount + '].' + suffix));
+                            });
+                            inputcount++;
+                        }                        
                     }
                 });
+                
+                $(this).gparent('form')[0].submit();
             });
 
 

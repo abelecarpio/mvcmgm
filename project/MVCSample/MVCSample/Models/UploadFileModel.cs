@@ -8,10 +8,10 @@ namespace MVCSample.Models
     {
         private const string extNames = "pdf,png,bmp";
 
-        public int MaximumFileSize { get; set; }
+        public long AttachmentTypeId { get; set; }
 
-        //[Required(ErrorMessage = "Upload file should not be empty.")]
-        //[FileUpload(nameof(MaximumFileSize), extNames)]
-        public HttpPostedFileBase UploadedFile { get; set; }
+        public string DocumentName { get; set; }
+        
+        public HttpPostedFileBase AttachmentFile { get; set; }
     }
 }

@@ -195,6 +195,7 @@
     <Content Include="Views\Home\ApplyAttachment_old.cshtml" />
     <Content Include="Views\Home\Upload.cshtml" />
     <Content Include="Views\Home\ApplyAttachment.cshtml" />
+    <Content Include="Views\Home\TestApplyAttachment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -77,7 +77,7 @@ namespace MVCSample.Controllers
             var isexistingcustomer = false;
             var model = new UploadAttachmentModel();
 
-
+            model.MaxFileSize = 1024;
             model.IsValidIdRequired = (source != null && source.Any(x => x.DocumentTypeId == 1)) && (
                     /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
                     (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 1).IsOptional) ||
@@ -111,6 +111,140 @@ namespace MVCSample.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult ApplyAttachment(UploadAttachmentModel model, IEnumerable<UploadDocumentDetail> ValidIdAttachment, IEnumerable<UploadDocumentDetail> ProofOfIncomeAttachment, IEnumerable<UploadDocumentDetail> OthersAttachment)
+        {
+            var source = MockData.UploadMockData.MockAttachmentModel;
+            var isexistingcustomer = false;
+            if (model == null) model = new UploadAttachmentModel();
+
+            model.MaxFileSize = 1024;
+            model.IsValidIdRequired = (source != null && source.Any(x => x.DocumentTypeId == 1)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 1).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 1).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 1).IsOptional)
+                );
+
+            model.IsProofOfIncomeRequired = (source != null && source.Any(x => x.DocumentTypeId == 2)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 2).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 2).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 2).IsOptional)
+                );
+
+            model.IsOtherRequired = (source != null && source.Any(x => x.DocumentTypeId == 3)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 3).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 3).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 3).IsOptional)
+                );
+
+            model.ValidIdLabel = source.First(x => x.DocumentTypeId == 1).DocumentTypeName;
+            model.ProofOfIncomeLabel = source.First(x => x.DocumentTypeId == 2).DocumentTypeName;
+            model.OthersLabel = source.First(x => x.DocumentTypeId == 3).DocumentTypeName;
+            
+            model.ValidIdList = source.First(x => x.DocumentTypeId == 1).DocumentAttachments;
+            model.ProofOfIncomeList = source.First(x => x.DocumentTypeId == 2).DocumentAttachments;
+            model.OthersList = source.First(x => x.DocumentTypeId == 3).DocumentAttachments;
+
+            model.ValidIdAttachment = new List<UploadDocumentDetail>();
+            model.ProofOfIncomeAttachment = new List<UploadDocumentDetail>();
+            model.OthersAttachment = new List<UploadDocumentDetail>();
+
+            return View(model);
+        }
+
+
+
+
+        public ActionResult TestApplyAttachment()
+        {
+            var source = MockData.UploadMockData.MockAttachmentModel;
+            var isexistingcustomer = false;
+            var model = new UploadAttachmentModel();
+
+
+            model.IsValidIdRequired = (source != null && source.Any(x => x.DocumentTypeId == 1)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 1).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 1).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 1).IsOptional)
+                );
+
+            model.IsProofOfIncomeRequired = (source != null && source.Any(x => x.DocumentTypeId == 2)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 2).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 2).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 2).IsOptional)
+                );
+
+            model.IsOtherRequired = (source != null && source.Any(x => x.DocumentTypeId == 3)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 3).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 3).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 3).IsOptional)
+                );
+
+            model.ValidIdLabel = source.First(x => x.DocumentTypeId == 1).DocumentTypeName;
+            model.ProofOfIncomeLabel = source.First(x => x.DocumentTypeId == 2).DocumentTypeName;
+            model.OthersLabel = source.First(x => x.DocumentTypeId == 3).DocumentTypeName;
+
+
+            model.ValidIdList = source.First(x => x.DocumentTypeId == 1).DocumentAttachments;
+            model.ProofOfIncomeList = source.First(x => x.DocumentTypeId == 2).DocumentAttachments;
+            model.OthersList = source.First(x => x.DocumentTypeId == 3).DocumentAttachments;
+
+            model.ValidIdAttachment.Add(new UploadDocumentDetail() { DocumentName = "test1" });
+            model.ValidIdAttachment.Add(new UploadDocumentDetail() { DocumentName = "test2" });
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public ActionResult TestApplyAttachment(UploadAttachmentModel modelx, IEnumerable<UploadDocumentDetail> ValidIdAttachment, IEnumerable<UploadDocumentDetail> ProofOfIncomeAttachment)
+        {
+            var source = MockData.UploadMockData.MockAttachmentModel;
+            var isexistingcustomer = false;
+            var model = new UploadAttachmentModel();
+
+
+            model.IsValidIdRequired = (source != null && source.Any(x => x.DocumentTypeId == 1)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 1).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 1).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 1).IsOptional)
+                );
+
+            model.IsProofOfIncomeRequired = (source != null && source.Any(x => x.DocumentTypeId == 2)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 2).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 2).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 2).IsOptional)
+                );
+
+            model.IsOtherRequired = (source != null && source.Any(x => x.DocumentTypeId == 3)) && (
+                    /*NOT EXISTING CUSTOMER AND NOT OPTIONAL*/
+                    (!isexistingcustomer && !source.First(x => x.DocumentTypeId == 3).IsOptional) ||
+                    /*EXISTING CUSTOMER,  EXISTINGOPTON IS TRUE AND NOT OPTIONAL*/
+                    (isexistingcustomer && source.First(x => x.DocumentTypeId == 3).ExistingCustomerRequired && !source.First(x => x.DocumentTypeId == 3).IsOptional)
+                );
+
+            model.ValidIdLabel = source.First(x => x.DocumentTypeId == 1).DocumentTypeName;
+            model.ProofOfIncomeLabel = source.First(x => x.DocumentTypeId == 2).DocumentTypeName;
+            model.OthersLabel = source.First(x => x.DocumentTypeId == 3).DocumentTypeName;
+
+
+            model.ValidIdList = source.First(x => x.DocumentTypeId == 1).DocumentAttachments;
+            model.ProofOfIncomeList = source.First(x => x.DocumentTypeId == 2).DocumentAttachments;
+            model.OthersList = source.First(x => x.DocumentTypeId == 3).DocumentAttachments;
+
+            model.ValidIdAttachment.Add(new UploadDocumentDetail() { DocumentName = "test1" });
+            model.ValidIdAttachment.Add(new UploadDocumentDetail() { DocumentName = "test2" });
+
+            return View(model);
+        }
 
         [HttpPost]
         public ActionResult ValidateFile(UploadFileModel model)

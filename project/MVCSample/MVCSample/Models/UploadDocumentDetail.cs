@@ -5,6 +5,10 @@ namespace MVCSample.Models
 {
     public class UploadDocumentDetail
     {
+
+        public long AttachmentTypeId { get; set; }
+
+
         [Required]
         public string DocumentName { get; set; }
 

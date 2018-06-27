@@ -7,20 +7,20 @@
 
 <h2>ApplyAttachment</h2>
 
-@using (Html.BeginForm("ValidateFile", "Home", FormMethod.Post, new { encType = "multipart/form-data", name = "partialupload" }))
+@using (Html.BeginForm("ApplyAttachment", "Home", FormMethod.Post, new { encType = "multipart/form-data", name = "partialupload" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-fluid">
 
 
         @*VALID ID*@
-        <div class="form-group">
-            <div class="row">
-                <div class="col-sm-2">
-                    <label for="validIdList">@Model.ValidIdLabel</label>
+        <div class="grpselect">
+            <div class="form-group">
+                <div class="col-sm-2 my-1">
+                    <label for="ValidIdAttachment" class="col-form-label">@Model.ValidIdLabel</label>
                 </div>
-                <div class="col-sm-3">
-                    <select name="validIdList" class="documentselection">
+                <div class="col-sm-4 my-1">
+                    <select name="ValidIdAttachment" class="form-control documentselection">
                         <option value="0" selected>Select Document Type</option>
                         @foreach (var item in Model.ValidIdList)
                         {
@@ -28,52 +28,65 @@
                         }
                     </select>
                 </div>
-                <div class="col-sm-2">
-                    <input type="file" class="rawfileupload" style="display:none" name="UploadedFile" />
+                <div class="col-sm-3 my-1">
+                    <input type="file" class="form-control-file rawfileupload" style="display:none;" />
                 </div>
             </div>
-            <div class="form-group filelist" style="margin-left: 20px;">
-
-            </div>
+            <br /><br />
+            <div class="container-fluid filelist"></div>
         </div>
         <br />
 
         @*PROOF OF INCOME*@
-        <div class="row">
-            <div class="col-sm-2">
-                <label for="proofOfIncomeList">@Model.ProofOfIncomeLabel</label>
+        <div class="grpselect">
+            <div class="form-group">
+                <div class="col-sm-2 my-1">
+                    <label for="ProofOfIncomeAttachment" class="col-form-label">@Model.ProofOfIncomeLabel</label>
+                </div>
+                <div class="col-sm-4 my-1">
+                    <select name="ProofOfIncomeAttachment" class="form-control documentselection">
+                        <option value="0" selected>Select Document Type</option>
+                        @foreach (var item in Model.ProofOfIncomeList)
+                        {
+                            <option value="@item.AttachmentTypeId">@item.DocumentName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-3 my-1">
+                    <input type="file" class="form-control-file rawfileupload" style="display:none;" />
+                </div>
             </div>
-            <div class="col-sm-3">
-                <select name="proofOfIncomeList" class="documentselection">
-                    <option value="0" selected>Select Document Type</option>
-                    @foreach (var item in Model.ProofOfIncomeList)
-                    {
-                        <option value="@item.AttachmentTypeId">@item.DocumentName</option>
-                    }
-                </select>
-            </div>
-            <div class="col-sm-2">
-                <input type="file" class="rawfileupload" style="display:none" />
-            </div>
+            <br /><br />
+            <div class="container-fluid filelist"></div>
         </div>
         <br />
+
         @*OTHER ATTACHMENTS*@
-        <div class="row">
-            <div class="col-sm-2">
-                <label for="otherList">@Model.OthersLabel</label>
+        <div class="grpselect">
+            <div class="form-group">
+                <div class="col-sm-2 my-1">
+                    <label for="OthersAttachment" class="col-form-label">@Model.OthersLabel</label>
+                </div>
+                <div class="col-sm-4 my-1">
+                    <select name="OthersAttachment" class="form-control documentselection">
+                        <option value="0" selected>Select Document Type</option>
+                        @foreach (var item in Model.OthersList)
+                        {
+                            <option value="@item.AttachmentTypeId">@item.DocumentName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-3 my-1">
+                    <input type="file" class="form-control-file rawfileupload" style="display:none;" />
+                </div>
             </div>
-            <div class="col-sm-3">
-                <select name="otherList" class="documentselection">
-                    <option value="0" selected>Select Document Type</option>
-                    @foreach (var item in Model.OthersList)
-                    {
-                        <option value="@item.AttachmentTypeId">@item.DocumentName</option>
-                    }
-                </select>
-            </div>
-            <div class="col-sm-2">
-                <input type="file" class="rawfileupload" style="display:none" />
-            </div>
+            <br /><br />
+            <div class="container-fluid filelist"></div>
+        </div>
+        <br />
+
+        <div class="col-sm-12" style="text-align: center;">
+            <input class="reg-button go btnAttribute" id="btnSubmit" type="button" value="Next"><br>
         </div>
     </div>
 }
@@ -84,6 +97,18 @@
     @Scripts.Render("~/bundles/jqueryval")
 
     <script type="text/javascript">
+
+        $.fn.gparent = function (filter) {
+            var parent = $(this).parent();
+            if (parent == null || parent.is('html')) return parent;
+            var filteredparent = $(this).parent(filter);
+
+            if (filteredparent != null && filteredparent.length > 0 && filteredparent.is(filter))
+                return filteredparent;
+
+            return parent.gparent(filter);
+        };
+        
         $(document).ready(function () {
 
             var isValidIdRequired = @Model.IsValidIdRequired.ToString().ToLower();
@@ -91,61 +116,105 @@
             var isOtherRequired = @Model.IsOtherRequired.ToString().ToLower();
 
 
-            //$(".rawfileupload").on('change', function () {
-            //    if ($(this).val() == "") return;
-            //    debugger;
-            //    var clone = $(this).clone();
-            //    clone.attr('name','UploadedFile');
-
-            //    $("#fValidator").val($(this).val());
-            //    //$("#uploadvalidator").submit();
-            //});
-
-
             $(".rawfileupload").on('change', function () {
                 if ($(this).val() == "") return;
+                              
                 var original = $(this);
-                var cloned = $(this).clone(true).attr("style", "display:none");
-
-
-                var grandparent = original.parent().parent();
-                var parent = original.parent();
-                var selection = parent.siblings().has('select').children('select').first();
+                var cloned = $(this).clone(true).val('').attr("style", "display:none");
+                var groupParent = $(this).gparent('.grpselect');
+                var destinationWrapper = groupParent.find('.filelist');
+                var selection = groupParent.find('select').first();
                 var selecttext = selection.children(':selected').text();
-                var wrapper = original.parent().parent().siblings(".filelist").first();
+                var selectvalue = selection.children(':selected').val();
+                var doclistname = selection.attr("name") + ".AttachmentFile";
+
                 
-                cloned.insertAfter(original);                
-                wrapper.append(original);
-                
+                //controls
+                var groupentry = $('<div />', { "class": 'form-group grpentry'});
+                var indentwrapperentry = $('<div />', { "class": 'col-sm-2 my-1', "style": "padding-right: 0px !important; text-align:right !important;" });
+                var indententry = $('<a />', { 'text': "x", "href": "#", "style": "color:gray !important; text-decoration: none !important;", "class": "lnkdeletedoc"});
+                var labelwraperentry = $('<div />', { "class": 'col-sm-3 my-1' });
+                var labelentry = $('<span />', { 'text': selecttext });
+                var docnamewraperentry = $('<div />', { "class": 'col-sm-4 my-1' });
+                var docnameentry = $('<span />', { 'text': original.val().split("/").reverse()[0].split("\\").reverse()[0] });
+                var fileuploadwrapperentry = $('<div />', { "class": 'col' });
+
+
+
+                cloned.insertAfter(original);
+                original.attr("style", "display:none");
+                original.attr("name", doclistname);
+
+                indentwrapperentry.append(indententry);
+                labelwraperentry.append(labelentry);
+                docnamewraperentry.append(docnameentry);
+                fileuploadwrapperentry.append(original);
+
                 selection.val(0);
 
+                groupentry.append(indentwrapperentry);
+                groupentry.append(labelwraperentry);
+                groupentry.append(docnamewraperentry);
+                groupentry.append(fileuploadwrapperentry);
+
+                
+                destinationWrapper.append(groupentry);
+                destinationWrapper.append($('<br />', {'style': 'font-size: 1px !important'}));                                
+            });
 
 
-                //var cloned = $(this).clone(true);
+            $('#btnSubmit').on('click', function () {
 
-                //cloned.insertAfter($(this));
+                //VALIDATE
+                if (isValidIdRequired) {
+                    alert($('.filelist').find('input[name^=ValidIdAttachment]').length);
+                }
 
-                //$("form[name=partialupload]").submit();
+                if (isProofOfIncomeRequired) {
+                    alert($('.filelist').find('input[name^=ProofOfIncomeAttachment]').length);
+                }
+                if (isOtherRequired) {
+                    alert($('.filelist').find('input[name^=OthersAttachment]').length);
+                }
+
+
+
+
+
+                $('.filelist').each(function (index, val) {
+                    var groupentry = $(val).find('.grpentry');
+                    for (var i = 0; i < groupentry.length; i++) {
+                        $(groupentry[i]).find('input').each(function (ci, cv) {
+                            var prefix = $(cv).attr('name').split(".")[0].split("[")[0];
+                            var suffix = $(cv).attr('name').split(".").reverse()[0].split("[").reverse()[0];
+                            alert("old name : " + $(cv).attr('name') + " new name :" + prefix + '[' + i + '].' + suffix);
+                            $(cv).attr('name', (prefix + '[' + i + '].' + suffix));
+                        });                        
+                    }
+                });
             });
 
 
             $(".documentselection").on("change", function () {
                 var selection = $(this);
-
-                var uploadfile = selection.closest('div').siblings().has('input:file').children('input:file')[0];
-                //var uploadfile = selection.closest('div').siblings().has('input:file').children('form').children('input:file')[0];
+                var uploadfile = $(this).gparent('.grpselect').find('input:file').first();
                 uploadfile.value = "";
-
                 if (selection.val() == 0) {
                     $(uploadfile).css('display', 'none');
                 } else {
                     $(uploadfile).css('display', '');
                 }
             });
+                        
 
-
-
-
+            $("body").on("click", ".lnkdeletedoc",function (e) {                
+                e.preventDefault = true;
+                if (confirm("Are you sure you want to remove this?")) {
+                    var parent = $(this).gparent('.grpentry')
+                    parent.next('br').remove();
+                    parent.remove();
+                }                
+            });            
 
         });
     </script>

@@ -18,7 +18,7 @@ namespace MVCSample.Models
         }
 
         #region GET PROPERTIES
-
+        
         // LABELS
         public string ValidIdLabel { get; set; }
         public string ProofOfIncomeLabel { get; set; }
@@ -31,6 +31,7 @@ namespace MVCSample.Models
         public bool HasOtherList { get { return OthersList != null && OthersList.Count > 0; } }
 
 
+        public int MaxFileSize { get; set; }
 
         public bool IsProofOfIncomeRequired { get; set; }
         public bool IsValidIdRequired { get; set; }

@@ -135,8 +135,7 @@
                     $(this).val('');
                     return;
                 }
-
-
+                
                 var original = $(this);
                 var cloned = $(this).clone(true).val('').attr("style", "display:none");
                 var groupParent = $(this).gparent('.grpselect');
@@ -146,8 +145,7 @@
                 var selectvalue = selection.children(':selected').val();
                 var listname = selection.attr("name");
                 var doclistname = listname + ".AttachmentFile";
-
-                
+                                
                 //controls
                 var groupentry = $('<div />', { "class": 'form-group grpentry'});
                 var indentwrapperentry = $('<div />', { "class": 'col-sm-2 my-1', "style": "padding-right: 0px !important; text-align:right !important;" });
